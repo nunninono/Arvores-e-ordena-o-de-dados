@@ -1,5 +1,7 @@
 package ABBGenerica;
 
+import java.util.Queue;
+
 public class ABB<T extends Comparable<T>> {
     private ABBNode <T> root;
 
@@ -16,7 +18,7 @@ public class ABB<T extends Comparable<T>> {
     public void insert (T valor) {
         // Se vazia, adiciona um nó com "valor" e a define como raiz
         if (this.isEmpty() == true) {
-            this.root = new ABBNode <T>(valor);
+            this.root = new ABBNode <T> (valor);
         }
         else {
             // chama a função de inserir caso ja haja nós na arvore
@@ -91,16 +93,15 @@ public class ABB<T extends Comparable<T>> {
     public void insertWithOut (T valor) {
         // Se vazia, adiciona um nó com "valor" e a define como raiz
         if (this.isEmpty() == true) {
-            this.root = new ABBNode <T>(valor);
+            this.root = new ABBNode <T> (valor);
         }
         else {
             // chama a função de inserir caso ja haja nós na arvore
             inserirSemRecursao(root, valor);
         }
     }
-
     // Codido de inserção sem recursão
-    private void inserirSemRecursao(ABBNode <T> node, T valor){ 
+    private void inserirSemRecursao(ABBNode <T> node, T valor) { 
         int retorno;
 
         while (true) {
@@ -109,20 +110,22 @@ public class ABB<T extends Comparable<T>> {
                 System.out.println("Valor repetido.");
                 return;
             }
-            else if(retorno < 0){
-                if(node.getLeft() != null){
+            else if (retorno < 0) {
+                if (node.getLeft() != null) {
                     node = node.getLeft();
-                } else {
-                    ABBNode <T> novo = new ABBNode<T>(valor);
+                } 
+                else {
+                    ABBNode <T> novo = new ABBNode <T> (valor);
                     node.setLeft(novo);
                     return;
                 }
             }
             else {
-                if(node.getRight() != null){
+                if (node.getRight() != null) {
                     node = node.getRight();
-                } else {
-                    ABBNode <T> novo = new ABBNode<T>(valor);
+                } 
+                else {
+                    ABBNode <T> novo = new ABBNode <T> (valor);
                     node.setRight(novo);
                     return;
                 }
@@ -130,7 +133,7 @@ public class ABB<T extends Comparable<T>> {
         }
     }
 
-    private int buscar() {
+    private int buscar(T valor) {
         return nodeCount(this.root, T valor);
     }
     private int nodeCount(ABBNode <T> node, T valor) {
@@ -151,4 +154,115 @@ public class ABB<T extends Comparable<T>> {
         return qtd;
     }
 
+    private ABBNode<T> menorValor() {
+        if (isEmpty() == true) {
+            return null;
+        }
+        ABBNode<T> menor = this.root;
+        while (menor.getLeft() != null) {
+            menor = menor.getLeft();
+        }
+        return menor;
+    }
+
+    private ABBNode<T> maiorValor() {
+        if (isEmpty() == true) {
+            return null;
+        }
+        ABBNode<T> maior = this.root;
+        while (maior.getRight() != null) {
+            maior = maior.getRight();
+        }
+        return maior;
+    }
+
+    public T menorInfo() {
+        ABBNode<T> menor = menorValor();
+        if (menor == null) {
+            return null;
+        } 
+        return menor.getInfo();
+    }
+
+    public T maiorInfo() {
+        ABBNode<T> maior = maiorValor();
+        if (maior == null) {
+            return null;
+        } 
+        return maior.getInfo();
+    }
+
+    public void emOrdem() {
+        if (isEmpty() == true) {
+            System.out.println("ABB Vazia!");;
+        }
+        else {
+            this.passeioEmOrdem(this.root);
+        }
+    }
+
+    private void passeioEmOrdem (ABBNode<T> node) {
+        if (node != null) {
+            passeioEmOrdem(node.getLeft());
+            System.out.println(node.getInfo());
+            passeioEmOrdem(node.getRight());
+        }
+    }
+
+    public void preOrdem() {
+        if (isEmpty() == true) {
+            System.out.println("ABB Vazia!");;
+        }
+        else {
+            this.passeioEmOrdem(this.root);
+        }
+    }
+
+    private void passeioPreOrdem (ABBNode<T> node) {
+        if (node != null) {
+            System.out.println(node.getInfo());
+            passeioEmOrdem(node.getLeft());
+            passeioEmOrdem(node.getRight());
+        }
+    }
+
+    public void posOrdem() {
+        if (isEmpty() == true) {
+            System.out.println("ABB Vazia!");;
+        }
+        else {
+            this.passeioEmOrdem(this.root);
+        }
+    }
+
+    private void passeioPosOrdem (ABBNode<T> node) {
+        if (node != null) {
+            passeioEmOrdem(node.getLeft());
+            passeioEmOrdem(node.getRight());
+            System.out.println(node.getInfo());
+        }
+    }
+
+    public void passeioPorNivel () {
+        if (this.isEmpty() == false) {
+            Queue<ABBNode<T>> fila = new Queue();
+            ABBNode<T> aux;
+            fila.enQueue(this.root);
+            while (fila.isEmpty() == false) {
+                aux = fila.deQueue();
+                if (aux.getLeft() != null) {
+                    fila.enQueue(aux.getLeft());
+                }
+                if (aux.getRight() != null) {
+                    fila.enQueue(aux.getRight());
+                }
+                System.out.println(aux.getInfo());
+            }
+        }
+        else {
+            System.out.println("Arvore vazia!");
+        }
+    }
+
 }
+
