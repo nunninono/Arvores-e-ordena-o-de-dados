@@ -264,5 +264,55 @@ public class ABB<T extends Comparable<T>> {
         }
     }
 
+    public void remover (T valor) {
+        if (isEmpty() == true) {
+            System.out.println("Arvore vazia!");
+            return;
+        }
+        this.root =  remove(this.root, valor);
+    }
+
+    private ABBNode<T> remove (ABBNode<T> node, T valor) {
+        if (node != null) {
+            int result = valor.compareTo(node.getInfo());
+            if (result == 0) {
+                if (node.getLeft() == null && node.getRight() == null) {
+                    node = null;
+                }
+                else if (node.getLeft() == null) {
+                    node = node.getRight();
+                }
+                else if (node.getRight() == null) {
+                    node = node.getLeft();
+                }
+                else {
+                    ABBNode<T> filho, pai;
+                    pai = node;
+                    filho = pai.getLeft();
+                    if (filho.getRight() != null) {
+                        while (filho.getRight() != null) {
+                            pai = filho;
+                            filho = filho.getRight();
+                        }
+                        // Para os filhos a esquerda do filho nao se perderem apos a remoção
+                        pai.setRight(filho.getLeft());
+                    }
+                    else {
+                        // Para os filhos a esquerda do filho nao se perderem apos a remoção
+                        pai.setLeft(filho.getLeft());
+                    }
+                    node.setLeft(filho.getInfo());
+                }
+            }
+            else if (result < 0) {
+                remove(node.getLeft(), valor);
+            }
+            else {
+                remove(node.getRight(), valor);
+            }
+        }
+        return node;
+    }
+
 }
 
